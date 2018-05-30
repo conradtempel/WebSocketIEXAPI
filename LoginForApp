@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+<head>
+  <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Graph</title>
+  <link rel="icon" href="hack_boyz.png" type="image/png">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyB5VpUL-oD7Iffi9k14yM5-VuYgBudA1ec",
+      authDomain: "stockapp-94c0f.firebaseapp.com",
+      databaseURL: "https://stockapp-94c0f.firebaseio.com",
+      projectId: "stockapp-94c0f",
+      storageBucket: "stockapp-94c0f.appspot.com",
+      messagingSenderId: "326339803374"
+    };
+    firebase.initializeApp(config);
+  </script>
+</head>
+<body>
+
+<div style='display: flex;position: absolute;top: 0;left: 0;height: 100%;width: 100%;'>
+  <div class="row valign-wrapper" style='margin: 0 auto;'>
+      <div class="col s6 offset-s3 valign">
+        <div class="card light-blue">
+          <div class="card-content white-text center-align">
+            <span class="card-title center-align">Login</span>
+            <input class='white-text' id='username' type='text' placeholder='Username'/>
+            <input id='password' type='text' placeholder='Password'/>
+            <a class = "waves-effect waves-light btn-small white black-text" id='login'>Log In</a>
+          </div>
+          <div class="card-action">
+            <a class='white-text' href="signUp">Don't have an account yet? Sign up here.</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+  <script src='js/login.js'></script>
+</body>
+</html>

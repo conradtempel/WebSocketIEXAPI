@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>API call update testing</title>
+  </head>
+  <body>
+   <p id='price'>Price</p>
+
+   <!--
+   <input type="text" name="stockabbreviation" id=stockabbreviation>
+   <button id="Submit">clickme</button>
+    -->
+
+  </body>
+  <script src='socket.io.js'></script>
+  <script type="text/javascript">
+
+
+  var url = window.location.href;
+  var stockabb = url.split('?')[1].split('=')[1];
+
+
+  const socket = io('https://ws-api.iextrading.com/1.0/last')
+  socket.on('connect', function(){
+    socket.emit('subscribe', stockabb)
+
+  });
+  socket.on('message', message => {
+    var msgDict=JSON.parse(message);
+    document.getElementById('price').innerHTML = msgDict['price'];
+    console.log('updated');
+  });
+
+  socket.on('disconnect', function(){});
+
+  </script>
+</html>

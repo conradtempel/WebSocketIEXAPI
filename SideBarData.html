@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SideBar Data Websockets</title>
+  </head>
+  <body>
+     <p id='price'>Price</p>
+     <p id='percentchange'>PercentChange</p>
+     <p id='previousclose'>PriceYesterday</p>
+     <p id='open'>FirstValOfDay</p>
+     <p id='volume'>AmountOfShares</p>
+     <p id='high'>HighForTheDay</p>
+     <p id='low'>LowForTheDay</p>
+
+  </body>
+  <script src='socket.io.js'></script>
+  <script type="text/javascript">
+
+  var stockabb = 'aapl';
+  var lastSalePrice=0;
+  var firstpriceofday=0;
+  //socket.on('connect', function(){
+    //socket.emit('subscribe', stockabb)
+  //});
+
+  function openSockets(open){
+    const percentchangesocket = io('https://ws-api.iextrading.com/1.0/tops');
+    percentchangesocket.on('connect', function(){
+      percentchangesocket.emit('subscribe', stockabb)
+    });
+    percentchangesocket.on('message', message => {
+      var percentDict=JSON.parse(message);
+      lastSalePrice = percentDict['lastSalePrice'];
+      console.log('Updated last sale price');
+    });
+    percentchangesocket.on('disconnect', function(){
+      console.log("Disconnected socket");
+    });
+
+    const pricesocket = io('https://ws-api.iextrading.com/1.0/last');
+    pricesocket.on('connect', function(){
+      pricesocket.emit('subscribe', stockabb)
+    });
+    pricesocket.on('message', message => {
+      var priceDict=JSON.parse(message);
+      document.getElementById('price').innerHTML ="Price: "+ priceDict['price'].toString();
+      console.log('Updated real time price');
+      var calcchange = ((( open - lastSalePrice) / lastSalePrice) * 100);
+      calcchange = calcchange.toFixed(2);
+      document.getElementById('percentchange').innerHTML = "Percent Change: " + calcchange.toString()+'%';
+      console.log('Updated percent change');
+    });
+    pricesocket.on('disconnect', function(){
+      console.log("Disconnected socket");
+    });
+
+  }
+  function httpGetOpenCloseHighLow(){
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", "https://api.iextrading.com/1.0/stock/"+stockabb+"/previous", true ); // false for synchronous request
+        xmlHttp.onload = function (e) {
+          if (xmlHttp.readyState === 4) {
+            if (xmlHttp.status === 200) {
+              var previousResponseDict=JSON.parse(xmlHttp.responseText);
+              var open=previousResponseDict['open'];
+              document.getElementById('open').innerHTML="Open: " + open.toString();
+              var high=previousResponseDict['high'];
+              document.getElementById('high').innerHTML="High: " + high.toString();
+              var low=previousResponseDict['low'];
+              document.getElementById('low').innerHTML="Low: " + low.toString();
+              var close=previousResponseDict['close'];
+              document.getElementById('previousclose').innerHTML="Close Value: " + close.toString();
+              openSockets(open);
+            } else {
+              console.error(xmlHttp.statusText);
+            }
+          }
+        };
+        xmlHttp.onerror = function (e) {
+          console.error(xmlHttp.statusText);
+        };
+        xmlHttp.send(null);
+    }
+    httpGetOpenCloseHighLow();
+  </script>
+</html>
